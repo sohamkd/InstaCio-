@@ -1,5 +1,6 @@
 package com.InstaCio.services.impl;
 
+import com.InstaCio.config.JwtProvider;
 import com.InstaCio.dtos.UserDto;
 import com.InstaCio.entities.User;
 import com.InstaCio.exceptions.ResourceNotFoundException;
@@ -42,17 +43,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto followUser(Integer userId1, Integer userId2) {
+    public UserDto followUser(Integer reqUserId, Integer userId2) {
 
-        User user1 = userRepository.findById(userId1).orElseThrow(() -> new ResourceNotFoundException("User with given id not found"));
+        User reqUser1 = userRepository.findById(reqUserId).orElseThrow(() -> new ResourceNotFoundException("User with given id not found"));
         User user2 = userRepository.findById(userId2).orElseThrow(() -> new ResourceNotFoundException("User with given id not found"));
 
-        user2.getFollowers().add(user1.getId());
-        user1.getFollowings().add(user2.getId());
+        user2.getFollowers().add(reqUser1.getId());
+        reqUser1.getFollowings().add(user2.getId());
 
-        userRepository.save(user1);
+        userRepository.save(reqUser1);
         userRepository.save(user2);
-        return modelMapper.map(user1, UserDto.class);
+        return modelMapper.map(reqUser1, UserDto.class);
     }
 
     @Override
@@ -63,7 +64,6 @@ public class UserServiceImpl implements UserService {
         user.setGender(userDto.getGender());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
-        user.setPassword(userDto.getPassword());
         User savedUser = userRepository.save(user);
         return modelMapper.map(savedUser, UserDto.class);
     }
@@ -74,5 +74,13 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.searchUser(query);
         List<UserDto> dtoList = users.stream().map(user ->new ModelMapper().map(user,UserDto.class)).collect(Collectors.toList());
         return dtoList;
+    }
+
+    @Override
+    public User findUserByJwt(String jwt) {
+
+        String email= JwtProvider.getEmailFromJwtToken(jwt);
+        User user = userRepository.findByEmail(email).orElseThrow(()->new ResourceNotFoundException("user not found with given email"));
+        return user;
     }
 }

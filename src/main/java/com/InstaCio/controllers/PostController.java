@@ -2,7 +2,9 @@ package com.InstaCio.controllers;
 
 import com.InstaCio.dtos.ApiResponseMsg;
 import com.InstaCio.dtos.PostDto;
+import com.InstaCio.entities.User;
 import com.InstaCio.services.PostService;
+import com.InstaCio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +19,22 @@ public class PostController {
     @Autowired
     public PostService postService;
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<PostDto> creatPost(@RequestBody PostDto postDto, @PathVariable int userId)
+    @Autowired
+    public UserService userService;
+
+    @PostMapping
+    public ResponseEntity<PostDto> creatPost(@RequestHeader("Authorization") String jwt,@RequestBody PostDto postDto)
     {
-        PostDto newPost = postService.createNewPost(postDto, userId);
+        User userByJwt = userService.findUserByJwt(jwt);
+        PostDto newPost = postService.createNewPost(postDto,userByJwt.getId());
         return new ResponseEntity<>(newPost, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{postId}/user/{userId}")
-    public ResponseEntity<ApiResponseMsg> deletePost(@PathVariable int postId,@PathVariable int userId)
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponseMsg> deletePost(@PathVariable int postId,@RequestHeader("Authorization") String jwt)
     {
-        postService.deletePost(postId,userId);
+        User userByJwt = userService.findUserByJwt(jwt);
+        postService.deletePost(postId,userByJwt.getId());
         ApiResponseMsg postDeletedSuccessfully = ApiResponseMsg.builder().message("post deleted successfully").success(true).status(HttpStatus.OK).build();
         return new ResponseEntity<>(postDeletedSuccessfully,HttpStatus.OK);
     }
@@ -53,17 +60,19 @@ public class PostController {
         return new ResponseEntity<>(allPost,HttpStatus.OK);
     }
 
-    @PutMapping("/{postId}/user/{userId}")
-    public ResponseEntity<PostDto> savedPostByUser(@PathVariable int postId,@PathVariable int userId)
+    @PutMapping("/{postId}")
+    public ResponseEntity<PostDto> savedPostByUser(@PathVariable int postId,@RequestHeader("Authorization") String jwt)
     {
-        PostDto postDto = postService.savedPost(postId, userId);
+        User userByJwt = userService.findUserByJwt(jwt);
+        PostDto postDto = postService.savedPost(postId, userByJwt.getId());
         return new ResponseEntity<>(postDto,HttpStatus.OK);
     }
 
-    @PutMapping("/like/{postId}/user/{userId}")
-    public ResponseEntity<PostDto> likePostByUser(@PathVariable int postId,@PathVariable int userId)
+    @PutMapping("/like/{postId}")
+    public ResponseEntity<PostDto> likePostByUser(@PathVariable int postId,@RequestHeader("Authorization") String jwt)
     {
-        PostDto postDto = postService.likePost(postId, userId);
+        User userByJwt = userService.findUserByJwt(jwt);
+        PostDto postDto = postService.likePost(postId, userByJwt.getId());
         return new ResponseEntity<>(postDto,HttpStatus.OK);
     }
 }

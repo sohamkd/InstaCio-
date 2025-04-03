@@ -1,6 +1,7 @@
 package com.InstaCio.controllers;
 
 import com.InstaCio.dtos.UserDto;
+import com.InstaCio.entities.User;
 import com.InstaCio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,52 +11,61 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     public UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserDto> registerUser(@RequestBody UserDto userDto)
-    {
-        UserDto userDto1 = userService.registerUser(userDto);
-        return new ResponseEntity<>(userDto1, HttpStatus.CREATED);
-    }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/api/users/{userId}")
     public ResponseEntity<UserDto> findByUserId(@PathVariable("userId") int userId)
     {
         UserDto user = userService.findUserById(userId);
         return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
-    @GetMapping("/Email/{userEmail}")
+    @GetMapping("/api/users/Email/{userEmail}")
     public ResponseEntity<UserDto> findByUserEmail(@PathVariable String userEmail)
     {
         UserDto userByEmail = userService.findUserByEmail(userEmail);
         return new ResponseEntity<>(userByEmail,HttpStatus.OK);
     }
 
-    @PutMapping("users/{userId1}/{userId2}")
-    public ResponseEntity<UserDto> followUser(@PathVariable int userId1,@PathVariable int userId2)
+    @PutMapping("/api/users/{userId2}")
+    public ResponseEntity<UserDto> followUser(@RequestHeader("Authorization") String jwt,@PathVariable int userId2)
     {
-        UserDto userDto = userService.followUser(userId1, userId2);
+        User reqUser = userService.findUserByJwt(jwt);
+        UserDto userDto = userService.followUser(reqUser.getId(), userId2);
         return new ResponseEntity<>(userDto,HttpStatus.OK);
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,@PathVariable int userId)
+    //we will update user who is logged in
+    //one user cannot update other users info
+    @PutMapping("/api/users")
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String jwt)
     {
-        UserDto userDto1 = userService.updateUser(userDto, userId);
+        User userByJwt = userService.findUserByJwt(jwt);
+        UserDto userDto1 = userService.updateUser(userDto, userByJwt.getId());
         return new ResponseEntity<>(userDto1,HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    @GetMapping("api/users/search")
     public ResponseEntity<List<UserDto>> searchUser(@RequestParam String query)
     {
         List<UserDto> userDtos = userService.searchUser(query);
         return new ResponseEntity<>(userDtos,HttpStatus.OK);
     }
 
+
+
+    @GetMapping("api/users/profile")
+    public User getUserFromToken(@RequestHeader("Authorization") String jwt)
+    {
+        //System.out.println("jwt-----"+jwt);
+
+        User user = userService.findUserByJwt(jwt);
+        user.setPassword(null);
+
+        return user;
+    }
 }
