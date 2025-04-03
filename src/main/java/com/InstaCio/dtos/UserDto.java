@@ -1,5 +1,7 @@
 package com.InstaCio.dtos;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -27,4 +29,7 @@ public class UserDto {
     private List<Integer> followers=new ArrayList<>();
 
     private List<Integer> followings=new ArrayList<>();
+
+    @JsonIgnore
+    private List<PostDto> savedPost=new ArrayList<>();
 }

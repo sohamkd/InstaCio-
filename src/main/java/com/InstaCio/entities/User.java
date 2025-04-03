@@ -1,5 +1,6 @@
 package com.InstaCio.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,7 +34,9 @@ public class User {
 
     private List<Integer> followings=new ArrayList<>();
 
-
+    //Many users can save many posts
+    @ManyToMany
+    private List<Post> savedPost=new ArrayList<>();
 
 
 }
