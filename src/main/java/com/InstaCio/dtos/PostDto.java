@@ -1,5 +1,6 @@
 package com.InstaCio.dtos;
 
+import com.InstaCio.entities.Comment;
 import com.InstaCio.entities.User;
 import lombok.*;
 
@@ -27,4 +28,6 @@ public class PostDto {
     private LocalDateTime createdAt;
 
     private List<UserDto> liked=new ArrayList<>();
+
+    private List<Comment> comments=new ArrayList<>();
 }
