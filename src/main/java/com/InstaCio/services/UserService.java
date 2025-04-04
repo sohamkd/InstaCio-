@@ -19,6 +19,6 @@ public interface UserService {
 
     public List<UserDto> searchUser(String query);
 
-    public User findUserByJwt(String jwt);
+    public UserDto findUserByJwt(String jwt);
 
 }

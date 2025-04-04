@@ -77,10 +77,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByJwt(String jwt) {
+    public UserDto findUserByJwt(String jwt) {
 
         String email= JwtProvider.getEmailFromJwtToken(jwt);
         User user = userRepository.findByEmail(email).orElseThrow(()->new ResourceNotFoundException("user not found with given email"));
-        return user;
+        return modelMapper.map(user,UserDto.class);
     }
 }

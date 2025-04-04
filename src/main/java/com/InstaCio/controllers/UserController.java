@@ -34,7 +34,7 @@ public class UserController {
     @PutMapping("/api/users/{userId2}")
     public ResponseEntity<UserDto> followUser(@RequestHeader("Authorization") String jwt,@PathVariable int userId2)
     {
-        User reqUser = userService.findUserByJwt(jwt);
+        UserDto reqUser = userService.findUserByJwt(jwt);
         UserDto userDto = userService.followUser(reqUser.getId(), userId2);
         return new ResponseEntity<>(userDto,HttpStatus.OK);
     }
@@ -44,7 +44,7 @@ public class UserController {
     @PutMapping("/api/users")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto,@RequestHeader("Authorization") String jwt)
     {
-        User userByJwt = userService.findUserByJwt(jwt);
+        UserDto userByJwt = userService.findUserByJwt(jwt);
         UserDto userDto1 = userService.updateUser(userDto, userByJwt.getId());
         return new ResponseEntity<>(userDto1,HttpStatus.OK);
     }
@@ -59,11 +59,11 @@ public class UserController {
 
 
     @GetMapping("api/users/profile")
-    public User getUserFromToken(@RequestHeader("Authorization") String jwt)
+    public UserDto getUserFromToken(@RequestHeader("Authorization") String jwt)
     {
         //System.out.println("jwt-----"+jwt);
 
-        User user = userService.findUserByJwt(jwt);
+        UserDto user = userService.findUserByJwt(jwt);
         user.setPassword(null);
 
         return user;

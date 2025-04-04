@@ -2,6 +2,7 @@ package com.InstaCio.controllers;
 
 import com.InstaCio.dtos.ApiResponseMsg;
 import com.InstaCio.dtos.PostDto;
+import com.InstaCio.dtos.UserDto;
 import com.InstaCio.entities.User;
 import com.InstaCio.services.PostService;
 import com.InstaCio.services.UserService;
@@ -25,7 +26,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<PostDto> creatPost(@RequestHeader("Authorization") String jwt,@RequestBody PostDto postDto)
     {
-        User userByJwt = userService.findUserByJwt(jwt);
+        UserDto userByJwt = userService.findUserByJwt(jwt);
         PostDto newPost = postService.createNewPost(postDto,userByJwt.getId());
         return new ResponseEntity<>(newPost, HttpStatus.CREATED);
     }
@@ -33,7 +34,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponseMsg> deletePost(@PathVariable int postId,@RequestHeader("Authorization") String jwt)
     {
-        User userByJwt = userService.findUserByJwt(jwt);
+        UserDto userByJwt = userService.findUserByJwt(jwt);
         postService.deletePost(postId,userByJwt.getId());
         ApiResponseMsg postDeletedSuccessfully = ApiResponseMsg.builder().message("post deleted successfully").success(true).status(HttpStatus.OK).build();
         return new ResponseEntity<>(postDeletedSuccessfully,HttpStatus.OK);
@@ -63,7 +64,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<PostDto> savedPostByUser(@PathVariable int postId,@RequestHeader("Authorization") String jwt)
     {
-        User userByJwt = userService.findUserByJwt(jwt);
+        UserDto userByJwt = userService.findUserByJwt(jwt);
         PostDto postDto = postService.savedPost(postId, userByJwt.getId());
         return new ResponseEntity<>(postDto,HttpStatus.OK);
     }
@@ -71,7 +72,7 @@ public class PostController {
     @PutMapping("/like/{postId}")
     public ResponseEntity<PostDto> likePostByUser(@PathVariable int postId,@RequestHeader("Authorization") String jwt)
     {
-        User userByJwt = userService.findUserByJwt(jwt);
+        UserDto userByJwt = userService.findUserByJwt(jwt);
         PostDto postDto = postService.likePost(postId, userByJwt.getId());
         return new ResponseEntity<>(postDto,HttpStatus.OK);
     }

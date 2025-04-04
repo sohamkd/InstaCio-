@@ -1,6 +1,7 @@
 package com.InstaCio.controllers;
 
 import com.InstaCio.dtos.CommentDto;
+import com.InstaCio.dtos.UserDto;
 import com.InstaCio.entities.Comment;
 import com.InstaCio.entities.User;
 import com.InstaCio.services.CommentService;
@@ -24,7 +25,7 @@ public class CommentController {
     @PostMapping("/{postId}")
     public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto commentDto, @PathVariable int postId, @RequestHeader("Authorization")String jwt)
     {
-        User userByJwt = userService.findUserByJwt(jwt);
+        UserDto userByJwt = userService.findUserByJwt(jwt);
         CommentDto createdComment = commentService.createComment(commentDto, postId, userByJwt.getId());
 
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
@@ -34,7 +35,7 @@ public class CommentController {
     @PutMapping("/like/{commentId}")
     public ResponseEntity<CommentDto> likeCommentHandler(@PathVariable Integer commentId, @RequestHeader("Authorization")String jwt) {
         System.out.println("----------- like comment id ---------- ");
-        User user = userService.findUserByJwt(jwt);
+        UserDto user = userService.findUserByJwt(jwt);
         CommentDto commentDto = commentService.likeComment(commentId, user.getId());
         return new ResponseEntity<CommentDto>(commentDto,HttpStatus.OK);
     }
