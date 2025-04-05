@@ -32,12 +32,12 @@ public class AppConfig {
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll())
                 .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class)
-                .csrf(csrf -> csrf.disable());
-                //.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return http.build();
     }
 
-   /* private CorsConfigurationSource corsConfigurationSource() {
+    private CorsConfigurationSource corsConfigurationSource() {
 
         return new CorsConfigurationSource() {
             @Override
@@ -55,7 +55,7 @@ public class AppConfig {
                 return cfg;
             }
         };
-    }*/
+    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
