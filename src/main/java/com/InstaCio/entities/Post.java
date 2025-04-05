@@ -31,11 +31,9 @@ public class Post {
 
     private LocalDateTime createdAt;
 
-
     //One post can be liked by multiple users
     @OneToMany
     private List<User> liked=new ArrayList<>();
-
 
     @OneToMany
     private List<Comment> comments=new ArrayList<>();

@@ -2,6 +2,7 @@ package com.InstaCio.dtos;
 
 import com.InstaCio.entities.Comment;
 import com.InstaCio.entities.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class PostDto {
 
     private String video;
 
+    @JsonIgnore
     private UserDto user;
 
     private LocalDateTime createdAt;

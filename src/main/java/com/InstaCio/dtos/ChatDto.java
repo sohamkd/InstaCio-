@@ -1,5 +1,6 @@
 package com.InstaCio.dtos;
 
+import com.InstaCio.entities.Message;
 import com.InstaCio.entities.User;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,4 +26,5 @@ public class ChatDto {
 
     private LocalDateTime timestamp;
 
+    private List<Message> messages=new ArrayList<>();
 }

@@ -22,16 +22,11 @@ public class Chat {
     private String chat_name;
     private String chat_image;
 
-    /*  private Boolean is_group;
-
-      @ManyToOne
-      private User created_by;
-  */
     @ManyToMany
     private List<User> users = new ArrayList<>();
 
     private LocalDateTime timestamp;
 
-   /* @OneToMany(mappedBy = "chat")
-    private List<Message> messages=new ArrayList<>();*/
+    @OneToMany(mappedBy = "chat")
+    private List<Message> messages=new ArrayList<>();
 }
